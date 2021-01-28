@@ -13,23 +13,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'dart:developer';
+
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
-import 'dart:developer';
-import 'app_config.dart';
-import 'drawer.dart';
+
 import 'a11y/a11y_gallery.dart' as a11y show buildGallery;
-import 'bar_chart/bar_gallery.dart' as bar show buildGallery;
-import 'gallery_scaffold.dart';
-import 'time_series_chart/time_series_gallery.dart' as time_series show buildGallery;
-import 'line_chart/line_gallery.dart' as line show buildGallery;
-import 'scatter_plot_chart/scatter_plot_gallery.dart' as scatter_plot show buildGallery;
-import 'combo_chart/combo_gallery.dart' as combo show buildGallery;
-import 'pie_chart/pie_gallery.dart' as pie show buildGallery;
+import 'app_config.dart';
 import 'axes/axes_gallery.dart' as axes show buildGallery;
+import 'bar_chart/bar_gallery.dart' as bar show buildGallery;
 import 'behaviors/behaviors_gallery.dart' as behaviors show buildGallery;
+import 'combo_chart/combo_gallery.dart' as combo show buildGallery;
+import 'drawer.dart';
+import 'gallery_scaffold.dart';
 import 'i18n/i18n_gallery.dart' as i18n show buildGallery;
 import 'legends/legends_gallery.dart' as legends show buildGallery;
+import 'line_chart/line_gallery.dart' as line show buildGallery;
+import 'pie_chart/pie_gallery.dart' as pie show buildGallery;
+import 'scatter_plot_chart/scatter_plot_gallery.dart' as scatter_plot show buildGallery;
+import 'time_series_chart/time_series_gallery.dart' as time_series show buildGallery;
 
 /// Main entry point of the gallery app.
 ///
@@ -61,30 +63,32 @@ class _HomeState extends State<Home> {
 
   List<Widget> catalogGalleries;
   List<Widget> galleries;
+
   @override
   void initState() {
     super.initState();
     galleries = catalogGalleries = [
-      ['a11y', '', a11yGalleries],
-      ['bar', 'bar charts', barGalleries],
-      ['timeSeries', 'time series charts', timeSeriesGalleries],
-      ['line', 'line charts', lineGalleries],
-      ['scatterPlot', 'scatter plot charts', scatterPlotGalleries],
-      ['combo', 'pie charts', comboGalleries],
-      ['pie', 'pie charts', pieGalleries],
-      ['axes', 'custom axis', axesGalleries],
-      ['behaviors', '', behaviorsGalleries],
-      ['i18n', '', i18nGalleries],
-      ['legends', '', legendsGalleries],
+      ['a11y', '', Icons.accessibility, a11yGalleries],
+      ['bar', 'bar charts', Icons.insert_chart, barGalleries],
+      ['timeSeries', 'time series charts', Icons.access_time, timeSeriesGalleries],
+      ['line', 'line charts', Icons.show_chart, lineGalleries],
+      ['scatterPlot', 'scatter plot charts', Icons.scatter_plot, scatterPlotGalleries],
+      ['combo', 'pie charts', Icons.multiline_chart, comboGalleries],
+      ['pie', 'pie charts', Icons.pie_chart, pieGalleries],
+      ['axis', 'custom axis', Icons.insert_chart, axesGalleries],
+      ['behaviors', '', Icons.touch_app, behaviorsGalleries],
+      ['i18n', '', Icons.language, i18nGalleries],
+      ['legends', '', Icons.legend_toggle, legendsGalleries],
     ]
         .map((e) => ListTile(
               onTap: () {
                 setState(() {
-                  galleries = (e[2] as List<GalleryScaffold>).map((e) => e.buildGalleryListTile(context)).toList();
+                  galleries = (e[3] as List<GalleryScaffold>).map((e) => e.buildGalleryListTile(context)).toList();
                 });
               },
               title: Text(e[0]),
               subtitle: Text(e[1]),
+              leading: Icon(e[2]),
             ))
         .toList();
   }
@@ -113,7 +117,7 @@ class _HomeState extends State<Home> {
       ),
       appBar: new AppBar(title: new Text(defaultConfig.appName)),
       body: new ListView(
-        key: ObjectKey(galleries),
+        key: galleries == catalogGalleries ? PageStorageKey('catalog') : null,
         padding: kMaterialListPadding,
         children: galleries,
       ),
